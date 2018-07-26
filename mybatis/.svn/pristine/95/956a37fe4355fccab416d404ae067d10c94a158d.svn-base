@@ -1,0 +1,17 @@
+package com.javaketang.entity;
+
+import java.util.List;
+
+public class StudentInfo extends Student {
+
+	private List<StudentCJ> studentCj;
+
+	public List<StudentCJ> getStudentCj() {
+		return studentCj;
+	}
+
+	public void setStudentCj(List<StudentCJ> studentCj) {
+		this.studentCj = studentCj;
+	}
+
+}

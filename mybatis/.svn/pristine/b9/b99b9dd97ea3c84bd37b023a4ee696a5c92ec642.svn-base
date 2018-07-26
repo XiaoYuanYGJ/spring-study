@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4.3//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="studentSpace">
+
+	<!-- 命名空间缓存配置 -->
+	<cache eviction="LRU" flushInterval="500" size="4058" readOnly="false"></cache>
+
+	<!-- 查询学生信息，启用缓存，不刷新缓存 -->
+	<select id="info" resultMap="student_info" flushCache="false"
+		useCache="true">
+		select
+		<include refid="student_column"><!-- 嵌入指定sql字段 -->
+			<property name="item" value="a" /> <!-- name设置属性名称，value是其值 -->
+		</include>
+		,
+		<include refid="student_cj_column">
+			<property name="item" value="b" />
+		</include>
+		,
+		<include refid="student_kc_column">
+			<property name="item" value="c" />
+		</include>
+		,
+		<include refid="student_xsz_column">
+			<property name="item" value="d" />
+		</include>
+		from et_student a left
+		join
+		<include refid="table_name">
+			<property name="suffix" value="_cj" />
+		</include>
+		b on
+		a.id=b.student_id
+		left
+		join
+		<include refid="table_name">
+			<property name="suffix" value="_kc" />
+		</include>
+		c on b.kc_id=c.kc_id
+		left join
+		<include refid="table_name">
+			<property name="suffix" value="_xsz" />
+		</include>
+		d on
+		a.id=d.stu_id group by a.id,d.xsz_id,c.kc_id
+	</select>
+
+	<!-- 使用构造器封装失败，错误为找不到构造器 -->
+
+	<!-- 查询返回结果封装 -->
+	<resultMap type="java.util.HashMap" id="student_info">
+		<id column="id" property="studentId" javaType="java.lang.Integer"
+			jdbcType="INTEGER" />
+		<result column="name" property="studentName" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex" javaType="java.lang.String" jdbcType="INTEGER"
+			property="sex" />
+
+		<!-- 鉴别器使用 -->
+		<!-- <discriminator javaType="java.util.ArrayList" column="pingfen"> <case 
+			value="0" resultMap="student_cj"></case> </discriminator> -->
+
+		<!-- 封装方式一 -->
+		<collection property="listCJ" javaType="java.util.ArrayList"
+			ofType="StudentCJ">
+			<id column="cj_id" property="cjId" javaType="Integer" jdbcType="INTEGER" />
+			<result column="student_id" property="stdId" javaType="Integer"
+				jdbcType="INTEGER" />
+			<result column="kc_id" property="kcId" javaType="Integer"
+				jdbcType="INTEGER" />
+			<result column="pingfen" property="pingfen" javaType="double"
+				jdbcType="DECIMAL" />
+		</collection>
+
+		<!-- 封装方式二：使用collection中的resultMap可以映射另一个高级结果映射 -->
+		<collection property="listCJ_TWO" javaType="java.util.ArrayList"
+			ofType="StudentCJ" resultMap="StudentCJ_package_one"></collection>
+
+		<!-- 封装方式三：使用构造器 -->
+		<collection property="listCJ_THREE" javaType="java.util.ArrayList"
+			ofType="StudentCJ" resultMap="StudentCJ_package_two"></collection>
+
+		<!-- 封装方式四：关联嵌套封装 ，嵌套studentCJ_info查询语句使用 -->
+		<collection property="listCJ_FOUR" column="id"
+			javaType="java.util.ArrayList" ofType="StudentCJ" select="studentCJ_info"
+			fetchType="lazy"></collection>
+
+	</resultMap>
+
+	<!-- 学生成绩数据映射方式一 ，使用id映射主键id，result映射基本属性 -->
+	<resultMap type="StudentCJ" id="StudentCJ_package_one">
+		<id column="cj_id" property="cjId" javaType="Integer" jdbcType="INTEGER" />
+		<result column="student_id" property="stdId" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="kc_id" property="kcId" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="pingfen" property="pingfen" javaType="double"
+			jdbcType="DECIMAL" />
+	</resultMap>
+
+	<!-- 学生成绩数据映射方式二 ，使用构造器映射结果 -->
+	<resultMap type="com.javaketang.entity.StudentCJ" id="StudentCJ_package_two">
+		<constructor>
+			<arg column="cj_id" name="cjId" javaType="java.lang.Integer"
+				jdbcType="INTEGER" />
+			<arg column="student_id" javaType="java.lang.Integer" jdbcType="INTEGER"
+				name="stdId" />
+			<arg column="kc_id" javaType="java.lang.Integer" jdbcType="INTEGER"
+				name="kcId" />
+			<arg column="pingfen" javaType="double" jdbcType="DECIMAL" name="pingfen" />
+			<arg column="text" javaType="java.lang.String" jdbcType="VARCHAR"
+				name="text" />
+		</constructor>
+	</resultMap>
+
+	<!-- 学生成绩 -->
+	<select id="studentCJ_info" resultType="StudentCJ" flushCache="false"
+		useCache="true">
+		select
+		cj_id cjId, student_id stdId,kc_id kcId,pingfen,text
+		from
+		<include refid="table_name">
+			<property name="suffix" value="_cj" />
+		</include>
+		a
+		<where>
+			a.student_id = #{id,jdbcType=INTEGER}
+		</where>
+	</select>
+
+
+
+	<!-- 学生表字段 -->
+	<sql id="student_column">
+		${item}.id,${item}.name,${item}.sex,${item}.student_kz
+	</sql>
+
+	<!-- 成绩字段 -->
+	<sql id="student_cj_column">
+		${item}.cj_id,${item}.student_id,${item}.kc_id,${item}.pingfen,${item}.text
+	</sql>
+
+	<!-- 课程字段 -->
+	<sql id="student_kc_column">
+		${item}.kc_id,${item}.kc_name
+	</sql>
+
+	<!-- 学生证字段 -->
+	<sql id="student_xsz_column">
+		${item}.xsz_id,${item}.stu_id,${item}.jiguan,${item}.startDate,${item}.endDate
+	</sql>
+
+	<!-- 表命字段 -->
+	<sql id="table_name">
+		et_student${suffix}
+	</sql>
+
+	<!-- 添加学生，刷新缓存，返回自动增长ID -->
+	<insert id="add" keyProperty="id" useGeneratedKeys="true"
+		parameterType="Student" flushCache="true">
+		insert into et_student
+		<trim prefix="(" suffix=")" suffixOverrides=","><!-- prefix：执行添加前缀；suffix：执行完添加后缀；suffixOverrides：后缀覆盖，可以不设置查看sql区别；prefixOverrides：前缀覆盖 -->
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="studentKz != null">
+				student_kz,
+			</if>
+		</trim>
+		values
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=INTEGER},
+			</if>
+			<if test="studentKz != null">
+				#{studentKz,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+
+</mapper>

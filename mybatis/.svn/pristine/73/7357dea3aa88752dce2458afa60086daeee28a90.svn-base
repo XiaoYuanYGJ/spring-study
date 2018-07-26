@@ -1,0 +1,70 @@
+package com.javaketang.entity;
+
+/**
+ * Ñ§Éú±í
+ * 
+ * @author yuanguangjie
+ *
+ */
+public class Student {
+
+	private Integer id;
+	private String name;
+	private Integer sex;
+	private Integer studentKz;
+	private String text;
+
+	public Student() {
+
+	}
+
+	public Student(Integer id, String name, Integer sex, Integer studentKz, String text) {
+		this.id = id;
+		this.name = name;
+		this.sex = sex;
+		this.studentKz = studentKz;
+		this.text = text;
+
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+
+	public Integer getStudentKz() {
+		return studentKz;
+	}
+
+	public void setStudentKz(Integer studentKz) {
+		this.studentKz = studentKz;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+}

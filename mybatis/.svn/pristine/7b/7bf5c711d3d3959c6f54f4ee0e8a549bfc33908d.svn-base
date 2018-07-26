@@ -1,0 +1,78 @@
+package com.javaketang.entity;
+
+/**
+ * 学生证
+ * @author yuanguangjie
+ *
+ */
+public class StudentXSZ {
+
+	private Integer xszId;
+	private Integer stuId;		//学生编号
+	private String jiguan;
+	private String startDate; // 发证时间
+	private String endDate;  
+	private String text;
+
+	public StudentXSZ() {
+
+	}
+
+	public Integer getXszId() {
+		return xszId;
+	}
+
+	public void setXszId(Integer xszId) {
+		this.xszId = xszId;
+	}
+
+	public Integer getStuId() {
+		return stuId;
+	}
+
+	public void setStuId(Integer stuId) {
+		this.stuId = stuId;
+	}
+
+	public String getJiguan() {
+		return jiguan;
+	}
+
+	public void setJiguan(String jiguan) {
+		this.jiguan = jiguan;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public StudentXSZ(Integer xszId, Integer stuId, String jiguan, String startDate, String endDate, String text) {
+		this.xszId = xszId;
+		this.stuId = stuId;
+		this.jiguan = jiguan;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.text = text;
+	}
+
+}

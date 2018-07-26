@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4.3//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="baseCoulmnSpace">
+
+	<!-- 多条联查字段 -->
+	<!-- 学生表字段 -->
+	<sql id="student_column">
+		${item}.id,${item}.name,${item}.sex,${item}.student_kz
+	</sql>
+
+	<!-- 成绩字段 -->
+	<sql id="student_cj_column">
+		${item}.cj_id,${item}.student_id,${item}.kc_id,${item}.pingfen,${item}.text
+	</sql>
+
+	<!-- 课程字段 -->
+	<sql id="student_kc_column">
+		${item}.kc_id,${item}.kc_name
+	</sql>
+
+	<!-- 学生证字段 -->
+	<sql id="student_xsz_column">
+		${item}.xsz_id,${item}.stu_id,${item}.jiguan,${item}.startDate,${item}.endDate
+	</sql>
+
+	<!-- 性别男健康字段 -->
+	<sql id="student_sex_man_column">
+		${item}.id as sex_man_id,${item}.stu_id as
+		sex_man_stu_id,${item}.date as sex_man_date,${item}.xin as
+		sex_man_xin,${item}.gan as sex_man_gan,${item}.pi as sex_man_pi,
+		${item}.fei as sex_man_fei,${item}.shen as
+		sex_man_shen,${item}.qianliexian
+	</sql>
+
+	<!-- 性别女健康字段 -->
+	<sql id="student_sex_woman_column">
+		${item}.id as sex_woman_id,${item}.stu_id as
+		sex_woman_stu_id,${item}.date as sex_woman_date,${item}.xin as
+		sex_woman_gan,${item}.gan as sex_woman_gan,${item}.pi as
+		sex_woman_pi,${item}.fei as sex_woman_fei,
+		${item}.shen as
+		sex_woman_shen,${item}.zigong
+	</sql>
+
+	<!-- 表命字段 -->
+	<sql id="table_name">
+		et_student${suffix}
+	</sql>
+
+
+</mapper>

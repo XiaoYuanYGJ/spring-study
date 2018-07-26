@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4.3//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="studentSpace">
+
+	<!-- 命名空间缓存配置 -->
+	<cache eviction="LRU" flushInterval="500" size="4058" readOnly="false"></cache>
+
+	<!-- 查询学生信息，启用缓存，不刷新缓存 -->
+	<select id="info" resultMap="student_info" flushCache="false"
+		useCache="true">
+		select
+		<include refid="baseCoulmnSpace.student_column">
+			<property name="item" value="a" />
+		</include>
+		,
+		<include refid="baseCoulmnSpace.student_cj_column">
+			<property name="item" value="b" />
+		</include>
+		,
+		<include refid="baseCoulmnSpace.student_kc_column">
+			<property name="item" value="c" />
+		</include>
+		,
+		<include refid="baseCoulmnSpace.student_xsz_column">
+			<property name="item" value="d" />
+		</include>
+		,
+		<include refid="baseCoulmnSpace.student_sex_woman_column">
+			<property name="item" value="e" />
+		</include>
+		,
+		<include refid="baseCoulmnSpace.student_sex_man_column">
+			<property name="item" value="f" />
+		</include>
+		from et_student a left
+		join
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_cj" />
+		</include>
+		b on
+		a.id=b.student_id
+		left
+		join
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_kc" />
+		</include>
+		c on b.kc_id=c.kc_id
+		left join
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_xsz" />
+		</include>
+		d on
+		a.id=d.stu_id
+		left join
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_sex_1" />
+		</include>
+		e on a.id=e.stu_id
+		left join
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_sex_2" />
+		</include>
+		f on a.id=f.stu_id
+		group
+		by a.id,d.xsz_id,c.kc_id
+	</select>
+
+	<!-- 使用构造器封装失败，暂时注释了此封装方式 -->
+
+	<!-- 查询返回结果封装 -->
+	<resultMap type="java.util.HashMap" id="student_info">
+		<id column="id" property="studentId" javaType="java.lang.Integer"
+			jdbcType="INTEGER" />
+		<result column="name" property="studentName" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex" javaType="java.lang.String" jdbcType="INTEGER"
+			property="sex" />
+
+
+		<!-- 封装课程 -->
+		<collection property="listKC" javaType="java.util.ArrayList"
+			ofType="StudentKC" resultMap="Student_KC"></collection>
+
+		<!-- 封装方式一: 基本id和result基本属性封装 -->
+		<collection property="listCJ" javaType="java.util.ArrayList"
+			ofType="StudentCJ">
+			<id column="cj_id" property="cjId" javaType="Integer" jdbcType="INTEGER" />
+			<result column="student_id" property="stdId" javaType="Integer"
+				jdbcType="INTEGER" />
+			<result column="kc_id" property="kcId" javaType="Integer"
+				jdbcType="INTEGER" />
+			<result column="pingfen" property="pingfen" javaType="double"
+				jdbcType="DECIMAL" />
+		</collection>
+
+		<!-- 封装方式二：使用collection中的resultMap可以映射另一个高级结果映射 -->
+		<collection property="listCJ_TWO" javaType="java.util.ArrayList"
+			ofType="StudentCJ" resultMap="StudentCJ_package_one"></collection>
+
+
+
+		<!-- 封装方式三：使用构造器 -->
+		<!-- <collection property="listCJ_THREE" javaType="java.util.ArrayList" 
+			ofType="StudentCJ" resultMap="StudentCJ_package_two"></collection> -->
+
+		<!-- 封装方式四：关联嵌套封装 ，嵌套studentCJ_info查询语句使用 -->
+		<collection property="listCJ_FOUR" column="id"
+			javaType="java.util.ArrayList" ofType="StudentCJ" select="studentCJ_info"
+			fetchType="lazy"></collection>
+
+		<!-- 封装健康数据集 -->
+		<collection property="listJK_SEX" javaType="java.util.ArrayList"
+			column="sex">
+			<!-- 鉴别器使用，用于封装不同性别健康数据，根据性别值做区分，类似Java中的switch语法 -->
+			<discriminator javaType="INTEGER" column="sex"
+				jdbcType="TINYINT">
+				<case value="2" resultMap="Student_sex_woman">
+				</case>
+				<case value="1" resultMap="Student_sex_man"></case>
+			</discriminator>
+		</collection>
+
+	</resultMap>
+
+	<!-- 性别男数据封装 -->
+	<resultMap type="StudentSex2" id="Student_sex_man">
+		<id column="sex_man_id" property="id" javaType="Integer" jdbcType="INTEGER" />
+		<result column="sex_man_stu_id" javaType="Integer" jdbcType="INTEGER"
+			property="stuId" />
+		<result column="sex_man_date" property="date" javaType="java.util.Date"
+			jdbcType="DATE" />
+		<result column="sex_man_xin" property="xin" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex_man_gan" property="gan" jdbcType="VARCHAR"
+			javaType="java.lang.String" />
+		<result column="sex_man_pi" property="pi" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex_man_fei" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="fei" />
+		<result column="sex_man_shen" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="shen" />
+		<result column="qianliexian" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="qianliexian" />
+	</resultMap>
+
+	<!-- 性别女数据封装 -->
+	<resultMap type="StudentSex1" id="Student_sex_woman">
+		<id column="sex_woman_id" property="id" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="sex_woman_stu_id" javaType="Integer" jdbcType="INTEGER"
+			property="stuId" />
+		<result column="sex_woman_date" property="date" javaType="java.util.Date"
+			jdbcType="DATE" />
+		<result column="sex_woman_xin" property="xin" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex_woman_gan" property="gan" jdbcType="VARCHAR"
+			javaType="java.lang.String" />
+		<result column="sex_woman_pi" property="pi" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex_woman_fei" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="fei" />
+		<result column="sex_woman_shen" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="shen" />
+		<result column="zigong" javaType="java.lang.String" jdbcType="VARCHAR"
+			property="zigong" />
+	</resultMap>
+
+	<!-- 课程封装 -->
+	<resultMap type="StudentKC" id="Student_KC">
+		<id column="kc_id" javaType="Integer" jdbcType="INTEGER" property="kcId" />
+		<result column="kc_name" javaType="String" jdbcType="VARCHAR"
+			property="kcName" />
+	</resultMap>
+
+	<!-- 学生成绩数据映射方式一 ，使用id映射主键id，result映射基本属性 -->
+	<resultMap type="StudentCJ" id="StudentCJ_package_one">
+		<id column="cj_id" property="cjId" javaType="Integer" jdbcType="INTEGER" />
+		<result column="student_id" property="stdId" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="kc_id" property="kcId" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="pingfen" property="pingfen" javaType="double"
+			jdbcType="DECIMAL" />
+	</resultMap>
+
+	<!-- 学生成绩数据映射方式二 ，使用构造器映射结果 -->
+	<!-- <resultMap type="com.javaketang.entity.StudentCJ" id="StudentCJ_package_two"> 
+		<constructor> <arg column="cj_id" name="cjId" javaType="java.lang.Integer" 
+		jdbcType="INTEGER" /> <arg column="student_id" javaType="java.lang.Integer" 
+		jdbcType="INTEGER" name="stdId" /> <arg column="kc_id" javaType="java.lang.Integer" 
+		jdbcType="INTEGER" name="kcId" /> <arg column="pingfen" javaType="double" 
+		jdbcType="DECIMAL" name="pingfen" /> <arg column="text" javaType="java.lang.String" 
+		jdbcType="VARCHAR" name="text" /> </constructor> </resultMap> -->
+
+	<!-- 学生成绩 -->
+	<select id="studentCJ_info" resultType="StudentCJ" flushCache="false"
+		useCache="true">
+		select
+		cj_id cjId, student_id stdId,kc_id kcId,pingfen,text
+		from
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_cj" />
+		</include>
+		a
+		<where>
+			a.student_id = #{id,jdbcType=INTEGER}
+		</where>
+	</select>
+
+
+
+	<!-- 返回自动增长ID -->
+	<insert id="add" keyProperty="id" useGeneratedKeys="true"
+		parameterType="Student" flushCache="true">
+		insert into et_student
+		<trim prefix="(" suffix=")" suffixOverrides=","><!-- prefix：执行添加前缀；suffix：执行完添加后缀；suffixOverrides：后缀覆盖，可以不设置查看sql区别；prefixOverrides：前缀覆盖 -->
+			<if test="name != null">
+				name,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="studentKz != null">
+				student_kz,
+			</if>
+		</trim>
+		values
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=INTEGER},
+			</if>
+			<if test="studentKz != null">
+				#{studentKz,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="Student" flushCache="true">
+		update et_student
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">
+					name = #{name,jdbcType =VARCHAR},
+				</if>
+				<if test="sex != null">
+					sex = #{sex,jdbcType=INTEGER},
+				</if>
+				<if test="studentKz != null">
+					student_kz = #{studentKz,jdbcType=INTEGER},
+				</if>
+			</trim>
+		</set>
+		<where>
+			id=#{id,jdbcType=INTEGER}
+		</where>
+	</update>
+
+</mapper>

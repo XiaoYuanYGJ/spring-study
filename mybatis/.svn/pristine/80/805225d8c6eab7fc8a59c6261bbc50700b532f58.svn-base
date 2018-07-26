@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- 查找数据库配置属性文件 -->
+	<properties resource="jdbc.properties"></properties>
+
+	<settings>
+		<setting name="cacheEnabled" value="true" /><!--开启全局配置映射器缓存 -->
+		<setting name="lazyLoadingEnabled" value="true" /><!-- 开启延迟加载的全局开关 -->
+		<setting name="aggressiveLazyLoading" value="true"/><!-- 任何方法的调用都会加载该对象的所有属性 -->
+	</settings>
+
+
+	<!-- 扫描需要反射的javaBean -->
+	<typeAliases>
+		<package name="com.javaketang.entity" />
+	</typeAliases>
+
+	<!-- 环境配置 -->
+	<environments default="development">
+		<!-- 环境变量 -->
+		<environment id="development">
+			<!-- 配置事务管理为JDBC -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 配置数据源 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="com/javaketang/mapper/StudentMapper.xml" />
+	</mappers>
+
+
+</configuration>

@@ -1,0 +1,81 @@
+package com.javaketang.dao.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.javaketang.dao.StudentDao;
+import com.javaketang.entity.Student;
+import com.javaketang.util.DBUtils;
+
+import net.sf.json.JSONArray;
+
+public class StudentDaoImpl implements StudentDao {
+
+	@Override
+	public int add(Student t) {
+		int line = 0;
+
+		try {
+			SqlSession session = DBUtils.getSqlSession();
+
+			line = session.insert("add", t);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		return line;
+	}
+
+	@Override
+	public int update(Student t) {
+		
+		int line = 0;
+
+		try {
+			SqlSession session = DBUtils.getSqlSession();
+
+			line = session.insert("update", t);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		return line;
+	}
+
+	@Override
+	public int delete(Integer id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Student> query() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map> studentInfo() {
+
+		List<Map> list = null;
+
+		try {
+			SqlSession session = DBUtils.getSqlSession();
+
+			list = session.selectList("info");
+
+			System.out.println("Êý¾Ý¼¯---¡·¡·¡·¡·" + JSONArray.fromObject(list));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+}

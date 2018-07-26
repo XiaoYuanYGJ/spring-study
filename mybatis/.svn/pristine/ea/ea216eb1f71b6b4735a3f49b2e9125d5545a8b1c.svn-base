@@ -1,0 +1,41 @@
+package com.javaketang.dao.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import com.javaketang.entity.Student;
+import com.javaketang.service.StudentTwoDao;
+
+public class StudentTwoDaoImpl implements StudentTwoDao {
+
+	@Override
+	public int add(Student t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int update(Student t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int delete(Integer id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Student> query() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map> studentInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

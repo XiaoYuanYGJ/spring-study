@@ -1,0 +1,48 @@
+package com.javaketang.entity;
+
+/**
+ * 
+ * @author yuanguangjie
+ *
+ */
+public class StudentKZ {
+
+	private Integer kzId;
+	private String kzName;
+	private String text;
+
+	public StudentKZ() {
+
+	}
+
+	public StudentKZ(Integer kzId, String kzName, String text) {
+		this.kzId = kzId;
+		this.kzName = kzName;
+		this.text = text;
+	}
+
+	public Integer getKzId() {
+		return kzId;
+	}
+
+	public void setKzId(Integer kzId) {
+		this.kzId = kzId;
+	}
+
+	public String getKzName() {
+		return kzName;
+	}
+
+	public void setKzName(String kzName) {
+		this.kzName = kzName;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+}

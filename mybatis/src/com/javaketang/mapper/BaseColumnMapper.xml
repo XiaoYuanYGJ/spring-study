@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4.3//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="baseCoulmnSpace">
+
+	<!-- 多表联查字段 -->
+	<!-- 学生表字段 -->
+	<sql id="student_column">
+		${item}.id,${item}.name,${item}.sex,${item}.student_kz
+	</sql>
+
+	<!-- 成绩字段 -->
+	<sql id="student_cj_column">
+		${item}.cj_id,${item}.student_id,${item}.kc_id,${item}.pingfen,${item}.text
+	</sql>
+
+	<!-- 课程字段 -->
+	<sql id="student_kc_column">
+		${item}.kc_id,${item}.kc_name
+	</sql>
+
+	<!-- 学生证字段 -->
+	<sql id="student_xsz_column">
+		${item}.xsz_id,${item}.stu_id,${item}.jiguan,${item}.startDate,${item}.endDate
+	</sql>
+
+	<!-- 性别男健康字段 -->
+	<sql id="student_sex_man_column">
+		${item}.id as sex_man_id,${item}.stu_id as
+		sex_man_stu_id,${item}.date as sex_man_date,${item}.xin as
+		sex_man_xin,${item}.gan as sex_man_gan,${item}.pi as sex_man_pi,
+		${item}.fei as sex_man_fei,${item}.shen as
+		sex_man_shen,${item}.qianliexian
+	</sql>
+
+	<!-- 性别女健康字段 -->
+	<sql id="student_sex_woman_column">
+		${item}.id as sex_woman_id,${item}.stu_id as
+		sex_woman_stu_id,${item}.date as sex_woman_date,${item}.xin as
+		sex_woman_gan,${item}.gan as sex_woman_gan,${item}.pi as
+		sex_woman_pi,${item}.fei as sex_woman_fei,
+		${item}.shen as
+		sex_woman_shen,${item}.zigong
+	</sql>
+
+	<!-- 表命字段 -->
+	<sql id="table_name">
+		et_student${suffix}
+	</sql>
+
+	<!-- 表基本字段 -->
+	<sql id="student_base_column">
+		id, name, sex, student_kz,text
+	</sql>
+
+	<sql id="student_cj_base_column">
+		cj_id as cjId, student_id as stdId, kc_id as kcId,
+		pingfen,text
+	</sql>
+
+	<sql id="student_kc_base_column">
+		kc_id as kcId, kc_name as kcName,text
+	</sql>
+
+	<sql id="student_xsz_base_column">
+		xsz_id as xszId, stu_id as stuId, jiguan , startDate,
+		endDate,text
+	</sql>
+
+	<sql id="student_sex_man_base_column">
+		id , stu_id as  stuId, date , xin , gan , pi ,
+		fei , shen ,
+		qianliexian,text
+	</sql>
+
+	<sql id="student_sex_woman_base_column">
+		id , stu_id as stuId , date , xin , gan , pi
+		, fei ,
+		shen ,
+		zigong,text
+	</sql>
+
+</mapper>

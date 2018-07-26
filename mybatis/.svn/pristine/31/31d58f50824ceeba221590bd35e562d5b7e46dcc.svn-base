@@ -1,0 +1,16 @@
+package com.javaketang.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.javaketang.base.dao.BaseDao;
+import com.javaketang.entity.Student;
+
+public interface StudentTwoDao extends BaseDao<Student> {
+
+	// 获取学生所有信息
+	List<Map> studentInfo();
+	
+	
+
+}

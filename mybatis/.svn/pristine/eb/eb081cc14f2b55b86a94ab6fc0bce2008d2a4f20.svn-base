@@ -1,0 +1,73 @@
+package com.javaketang.test;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.logging.LogFactory;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
+import org.junit.Test;
+
+import com.javaketang.entity.Student;
+import com.javaketang.entity.StudentCJ;
+import com.javaketang.util.DBUtils;
+
+import net.sf.json.JSONArray;
+
+public class TestOne {
+
+	private String resuoce = "com.javaketang.mapper.StudentMapper.";
+
+	private Logger log = Logger.getLogger(TestOne.class);
+
+	
+	@Test
+	public void test() {
+		try {
+			// 获取数据库连接
+			SqlSession session = DBUtils.getSqlSession();
+
+			List<Map> list = session.selectList("info");
+			log.debug(JSONArray.fromObject(list));
+			System.out.println("数据集---》》》》"+JSONArray.fromObject(list));
+		} catch (Exception e) {
+			// TODO: handle exception
+			log.error(e.getMessage());
+		}
+
+	}
+
+	public void testAdd() {
+
+		SqlSession session = DBUtils.getSqlSession();
+
+		Student student = new Student();
+		student.setId(85);
+		student.setName("在水电费");
+		student.setSex(1);
+		student.setStudentKz(874512);
+
+		int number = session.insert("add", student);
+		System.out.println(number);
+		System.out.println(student.getId());
+	}
+
+	public void queryOne() {
+
+		SqlSession session = DBUtils.getSqlSession();
+
+		List<StudentCJ> list = session.selectList("studentCJ_info", 1);
+		
+		System.out.println(list);
+		
+	}
+
+	public static void main(String[] args) {
+
+		TestOne test = new TestOne();
+
+		// test.testAdd();
+		test.test();
+	}
+
+}

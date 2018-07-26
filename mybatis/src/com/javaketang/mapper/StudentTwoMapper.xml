@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4.3//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="studentSpaceTwo">
+
+	<!-- 命名空间缓存配置 -->
+	<cache eviction="LRU" flushInterval="500" size="4058" readOnly="false"></cache>
+
+	<!-- 查询学生信息，启用缓存，不刷新缓存 -->
+	<select id="query_student" resultMap="paceage_student_all_data"
+		flushCache="false" useCache="true">
+		select
+		<include refid="baseCoulmnSpace.student_base_column" />
+		from
+		<include refid="baseCoulmnSpace.table_name" />
+	</select>
+
+	<!-- 映射所有学生有关数据 -->
+	<resultMap type="java.util.HashMap" id="paceage_student_all_data">
+		<id column="id" property="studentId" javaType="java.lang.Integer"
+			jdbcType="INTEGER" />
+		<result column="name" property="studentName" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result column="sex" javaType="java.lang.String" jdbcType="INTEGER"
+			property="sex" />
+
+		<!-- 映射学生课程和成绩; column设置： 传递查询参数名称=字段名称； fetchType：设置为懒加载lazy、即时加载eager； select:调用select语句-->
+		<collection property="ListKC_CJ" column="{stdId=id}" javaType="java.util.ArrayList"
+			ofType="java.util.HashMap" select="qeury_select_kc_cj" fetchType="lazy">
+		</collection>
+
+		<!-- 映射学生证 -->
+		<collection property="ListXSZ" column="{stuId=id}"
+			javaType="java.util.ArrayList" ofType="StudentXSZ" select="query_student_xsc"
+			fetchType="lazy"></collection>
+
+		<!-- 封装健康数据集 -->
+		<collection property="listJK_SEX" javaType="java.util.ArrayList"
+			fetchType="lazy">
+			<!-- 鉴别器使用，用于封装不同性别健康数据，根据性别值做区分，类似Java中的switch语法; 这里学生表中性别数据为：1表示男，2表示女 -->
+			<discriminator javaType="INTEGER" column="sex"
+				jdbcType="TINYINT">
+				<!-- 使用case中resultType设置返回结果为HashMap方式封装男学生健康数据 -->
+				<case value="1" resultType="java.util.HashMap">
+					<!-- 封装男学生健康值 -->
+					<collection property="sex_man" column="{stuId=id}"
+						javaType="java.util.ArrayList" ofType="StudentSex2" select="query_student_sex_man"
+						fetchType="lazy"></collection>
+				</case>
+				<!-- 使用resultMap映射封装女学生健康数据 -->
+				<case value="2" resultMap="Student_sex_woman_data"></case>
+			</discriminator>
+		</collection>
+
+	</resultMap>
+
+	<!-- 映射女学生健康数据 -->
+	<resultMap type="java.util.HashMap" id="Student_sex_woman_data">
+		<collection property="sex_woman" column="{stuId=id}"
+			javaType="java.util.ArrayList" ofType="StudentSex1" select="query_student_sex_woman"
+			fetchType="lazy"></collection>
+	</resultMap>
+
+	<!-- 查询学生课程及成绩 -->
+	<select id="qeury_select_kc_cj" resultType="java.util.HashMap"
+		flushCache="false" useCache="true">
+		select
+		<include refid="baseCoulmnSpace.student_kc_column">
+			<property name="item" value="a" />
+		</include>
+		,
+		<include refid="baseCoulmnSpace.student_cj_column">
+			<property name="item" value="b" />
+		</include>
+		from
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_kc" />
+		</include>
+		a
+		left join
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_cj" />
+		</include>
+		b
+		on a.kc_id=b.kc_id
+		<where>
+			1=1
+			<if test="stuId != null and stuId !=0">
+				and b.student_id = #{stdId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询学生证 -->
+	<select id="query_student_xsc" resultType="StudentXSZ"
+		flushCache="false" useCache="true">
+		select
+		<include refid="baseCoulmnSpace.student_xsz_base_column" />
+		from
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_xsz" />
+		</include>
+		<where>
+			1=1
+			<if test="stuId != null and stuId !=0">
+				and stu_id = #{stuId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询女学生 -->
+	<select id="query_student_sex_woman" resultType="StudentSex1"
+		flushCache="false" useCache="true">
+		select
+		<include refid="baseCoulmnSpace.student_sex_woman_base_column" />
+		from
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_sex_1" />
+		</include>
+		<where>
+			1=1
+			<if test="stuId != null and stuId !=0">
+				and stu_id = #{stuId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询男学生 -->
+	<select id="query_student_sex_man" resultType="StudentSex2"
+		flushCache="false" useCache="true">
+		select
+		<include refid="baseCoulmnSpace.student_sex_man_base_column" />
+		from
+		<include refid="baseCoulmnSpace.table_name">
+			<property name="suffix" value="_sex_2" />
+		</include>
+		<where>
+			1=1
+			<if test="stuId != null and stuId !=0">
+				and stu_id = #{stuId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

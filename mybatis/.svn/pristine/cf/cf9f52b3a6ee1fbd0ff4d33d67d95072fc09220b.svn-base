@@ -1,0 +1,15 @@
+package com.javaketang.base.dao;
+
+import java.util.List;
+
+public interface BaseDao<T> {
+
+	int add(T t);// 添加
+
+	int update(T t);// 修改
+
+	int delete(Integer id);// 删除
+
+	List<T> query();// 查询所有
+
+}
