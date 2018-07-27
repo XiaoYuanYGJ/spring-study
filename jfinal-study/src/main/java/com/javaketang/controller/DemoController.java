@@ -1,0 +1,17 @@
+package com.javaketang.controller;
+
+import com.jfinal.core.Controller;
+
+/**
+ * ¿ØÖÆÆ÷ÊµÀýÀà
+ * @author exam-pc
+ *
+ */
+public class DemoController extends Controller{
+
+	public void demo(){
+		
+		 render("demo.jsp");
+	}
+	
+}
